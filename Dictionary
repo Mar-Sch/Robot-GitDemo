@@ -1,0 +1,51 @@
+*** Settings ***
+
+*** Variables ***
+${Environment} =  dev
+${Browser} =  ie
+&{URL}  dev=http://...  qa=http://...  prod=http://...
+&{CUSTOMER_USER}  FirstName=Brian  LastName=Lamb  email=brian@rfw.com  Password=Password
+&{ADMIN_USER}  FirstName=Marco  LastName=Schaafsma  email=marco@rfw.com  Password=Password1
+
+*** Test Cases ***
+Should be able to view landing page
+    Navigate to landing page
+
+Should be able to register for new account
+    Navigate to landing page
+    Create New Account  ${CUSTOMER_USER}
+
+
+
+*** Keywords ***
+Navigate to landing page
+    go to  ${URL.${Environment}}
+
+Create New Account
+    [Arguments]  ${UserData}    #note: this UserData is a local variable
+    Click Registration Link
+    Verify Page Loaded
+    Fill Page and Submit  ${UserData}
+
+Create New Account with Invalid Data
+    [Arguments]  ${UserData}
+    Click Registration Link
+    Verify Page Loaded
+    Fill Email  ${UserData.email}
+    Fill Password  abc     #assuming that this value is not accepted as a password
+
+###############this would be on a PO file########################
+Fill Page and Submit
+    [Arguments]  ${UserData}    #note: this UserData is also local variable, so has nothing to do with the one in Create New Account
+    Fill Email  ${UserData.email}
+    Fill Password  ${UserData.Password}
+
+Fill Email
+    [Arguments]  ${email}
+    input text  ${REGISTER_EMAIL_INPUT}  ${email}
+
+Fill Password
+    [Arguments]  ${Password}
+    input text  ${REGISTER_PASSWORD1_INPUT}  ${Password}
+
+
